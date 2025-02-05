@@ -9,15 +9,15 @@ CREATE TABLE product (
 
 create table users(
 	user_id SERIAL PRIMARY KEY NOT NULL,
-	user_phoneNumber bigint UNIQUE NOT NULL,
+	user_phoneNumber TEXT UNIQUE NOT NULL,
 	user_real_name TEXT NOT NULL,
 	user_adress TEXT,
 	paswrd TEXT NOT NULL,
 	mail TEXT UNIQUE
 );
 
-insert into 
-	users(user_phoneNumber, user_real_name, user_adress, paswrd, mail) values(9035853408, 'Максим', 'г. Москва, ул. Пушкина, дом 26', '123', 'user_test@mail.ru');
+insert into
+	users(user_phoneNumber, user_real_name, user_adress, paswrd, mail) values('9035853408', 'Максим', 'г. Москва, ул. Пушкина, дом 26', '123', 'user_test@mail.ru');
 
 INSERT INTO
     product(code, name_, image, price, discount)
