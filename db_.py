@@ -93,7 +93,7 @@ def login_user(identifier, password):
             return 'error'
 
         cur.execute("""
-            SELECT user_phoneNumber, paswrd, mail 
+            SELECT user_phoneNumber, paswrd, mail, user_real_name 
             FROM users 
             WHERE user_phoneNumber = %s OR mail = %s;
         """, (identifier, identifier))
@@ -103,8 +103,10 @@ def login_user(identifier, password):
 
         if user_data:
             stored_password = user_data[1]
+            print(user_data)
+            print(f"Ответ бд: {user_data[1]} | Приход по Api: {password}")
             if str(stored_password) == str(password):
-                return 'good'
+                return user_data
             else:
                 print('login_user -> пароль неверный')
                 return 'error_password'
@@ -133,11 +135,11 @@ def get_once_product_id(id_prod):
                     FROM product 
                     WHERE pid = %s;
                 """, (str(id_prod)))
-        track_data = cur.fetchone()
+        product_data = cur.fetchone()
         conn.close()
 
-        if track_data:
-            return track_data
+        if product_data:
+            return product_data
         else:
             print('get_once_product_id -> трек не найден')
             return 'error_user'
@@ -156,9 +158,9 @@ def get_random_product():
 
 
         cur.execute("""SELECT * FROM product""")
-        trackS_data = cur.fetchall()
+        productS_data = cur.fetchall()
         conn.close()
-        ids = [list(item) for item in trackS_data]
+        ids = [list(item) for item in productS_data]
 
         # Выбираем случайные 5 ID
         random_ids = random.sample(ids, 5)
@@ -169,5 +171,29 @@ def get_random_product():
         print(f'ОШИБКА! get_random_product ->:', e)
         return 'error'
 
-#if __name__ == '__main__':
-    #print(chek_to_add_users(4))
+def get_all_product():
+    """ ПОЛУЧЕНИЕ всех товаров по списку """
+    try:
+        conn, cur = conncet_to_bd()
+        if conn is None or cur is None:
+            print('get_random_product -> не удалось подключиться')
+            return 'error'
+
+
+        cur.execute("""SELECT * FROM product""")
+        productS_data = cur.fetchall()
+        conn.close()
+        ids = [list(item) for item in productS_data]
+
+        # Выбираем случайные 5 ID
+        #random_ids = random.sample(ids, 5)
+
+        return ids
+
+    except Exception as e:
+        print(f'ОШИБКА! get_random_product ->:', e)
+        return 'error'
+
+if __name__ == '__main__':
+    response_bd =login_user("9035853408", "123")
+    print(response_bd[0])
