@@ -19,7 +19,7 @@ def conncet_to_bd():
 ======================================> МАНИПУЛЯЦИИ С ЮЗЕРОМ <=========================================
 """
 
-def chek_to_add_users(ph_user, pas, user_realName):
+def chek_to_add_users(ph_user, pas, user_realName, mail_):
     """ ДОБАВЛЕНИЕ НОВОГО ПОЛЬЗОВАТЕЛЯ """
     try:
         conn, cur = conncet_to_bd()
@@ -33,7 +33,7 @@ def chek_to_add_users(ph_user, pas, user_realName):
             conn.close()
             return 'error_user_name_exist'
 
-        response = new_user(ph_user, pas, user_realName, conn, cur)
+        response = new_user(ph_user, pas, user_realName, mail_, conn, cur)
 
         if response == 'good':
             return response
@@ -43,9 +43,9 @@ def chek_to_add_users(ph_user, pas, user_realName):
         print(f'АШИБКА БЛИН chek_to_add_users -> :', e)
         return 'error'
 
-def new_user(ph_user, pas, user_realName, conn, cur):
+def new_user(ph_user, pas, user_realName, mail_, conn, cur):
     try:
-        cur.execute("""INSERT INTO users (user_phoneNumber, user_real_name, paswrd) VALUES (%s, %s, %s);""", (ph_user, user_realName, pas,))
+        cur.execute("""INSERT INTO users (user_phoneNumber, user_real_name, paswrd, mail) VALUES (%s, %s, %s);""", (ph_user, user_realName, pas, mail_,))
         conn.commit()
         conn.close()
         return 'good'
@@ -60,7 +60,7 @@ def get_all_users():
         conn, cur = conncet_to_bd()
         result = {"users": []}
         if conn is None or cur is None:
-            return json.dumps({"error": "Ощибка подключения к бд"})
+            return json.dumps({"error": "error"})
 
         cur.execute("""SELECT * FROM users;""")
         users_list = cur.fetchall()
