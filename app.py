@@ -44,7 +44,7 @@ def login_user():
     pas = data.get('password')
 
     response_bd = db_.login_user(log_in, pas)
-    print(response_bd)
+    #print(response_bd)
     json.dumps(response_mess)
     if response_bd == 'error_password' or response_bd == 'error':
         response_mess['response_server'].append({
@@ -76,11 +76,13 @@ def get_all_products():
             'message': response_bd
         })
         print(response_mess, 1)
-        return json.dumps(response_mess)
+        json.dumps(response_mess)
+        return jsonify(response_mess), 400
     else:
         response_mess = {'response_server': response_bd}
         print(response_mess, 2)
-        return json.dumps(response_mess)
+        json.dumps(response_mess)
+        return jsonify(response_mess), 200
 
 """ MAIN """
 if __name__ == '__main__':

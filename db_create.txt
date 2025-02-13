@@ -2,7 +2,7 @@ CREATE TABLE product (
 	pid serial PRIMARY KEY,
 	code VARCHAR ( 100 ) UNIQUE NOT NULL,
 	name_ VARCHAR ( 100 ) NOT NULL,
-	image VARCHAR ( 100 ) NOT NULL,
+	image VARCHAR ( 500 ) NOT NULL,
 	price INT NOT NULL,
 	discount INT NOT NULL
 );
@@ -15,6 +15,15 @@ create table users(
 	paswrd TEXT NOT NULL,
 	mail TEXT UNIQUE
 );
+CREATE TABLE cart (
+    cart_id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    pid INT NOT NULL,
+    quantity INT NOT NULL DEFAULT 1,
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (pid) REFERENCES product(pid) ON DELETE CASCADE
+);
 
 insert into
 	users(user_phoneNumber, user_real_name, user_adress, paswrd, mail) values('9035853408', 'Максим', 'г. Москва, ул. Пушкина, дом 26', '123', 'user_test@mail.ru');
@@ -22,10 +31,10 @@ insert into
 INSERT INTO
     product(code, name_, image, price, discount)
 VALUES
-    ('0000001','Samsung Galaxy A10S','1.jpg', 520, 0),
-    ('0000002', 'Повербанк Samsung', '2.jpg', 3000, 200),
-	('0000003', 'IPhone Apple SE', '3.jpg', 10000, 500),
-	('0000004', 'IPhone Apple X', '4.jpg', 25000, 300),
-	('0000005', 'Лампа Ночник', '5.jpg', 1600, 500),
-	('0000006', 'Кружка 0.2', '6.jpg', 1000, 300),
-    ('0000007', 'Велосипед Stels prazdnic', '7.jpg', 5020, 350);
+    ('0000001','Samsung Galaxy A10S','https://avatars.mds.yandex.net/i?id=b3be4c9b6280fcf1cbe55920069209ec0067ec55-10313458-images-thumbs&n=13', 520, 0),
+    ('0000002', 'Повербанк Samsung', 'https://ogo1.ru/upload/iblock/bcb/bcb4622add1d4d6b197710646b97ba74.jpeg', 3000, 200),
+	('0000003', 'IPhone Apple SE', 'https://avatars.mds.yandex.net/get-marketpic/5514804/picee0672217a21b7622fbb5f6774d9e6c4/600x800', 10000, 500),
+	('0000004', 'IPhone Apple X', 'https://avatars.mds.yandex.net/i?id=2a0000017a00f7c5da9f11ae58d98ae1cddc-3557494-images-thumbs&n=13', 25000, 300),
+	('0000005', 'Лампа Ночник', 'https://cdn1.ozone.ru/s3/multimedia-8/6638666984.jpg', 1600, 500),
+	('0000006', 'Кружка 0.2', 'https://avatars.mds.yandex.net/i?id=1a8c71520cfba0f28c372d5c5cf3d302a28db5bd-10176094-images-thumbs&n=13', 1000, 300),
+    ('0000007', 'Велосипед Stels prazdnic', 'https://avatars.mds.yandex.net/i?id=a394766991d496547e4a4eb299e6c464_l-8174408-images-thumbs&n=13', 5020, 350);
