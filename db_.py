@@ -1,4 +1,6 @@
 import psycopg2, random, json, cfg
+from psycopg2 import errors
+
 
 """ ПОДКЛЮЧЕНИЕ К БД """
 def conncet_to_bd():
@@ -19,7 +21,7 @@ def conncet_to_bd():
 ======================================> МАНИПУЛЯЦИИ С ЮЗЕРОМ <=========================================
 """
 
-def chek_to_add_users(ph_user, pas, user_realName, mail_):
+def chek_to_add_users(ph_user, pas, user_realName, mail_, adress):
     """ ДОБАВЛЕНИЕ НОВОГО ПОЛЬЗОВАТЕЛЯ """
     try:
         conn, cur = conncet_to_bd()
@@ -31,25 +33,29 @@ def chek_to_add_users(ph_user, pas, user_realName, mail_):
         existing_user = cur.fetchone()
         if existing_user:
             conn.close()
-            return 'error_user_name_exist'
+            return 'error_user_phone_exist'
 
-        response = new_user(ph_user, pas, user_realName, mail_, conn, cur)
+        response = new_user(ph_user, pas, user_realName, mail_, adress, conn, cur)
 
-        if response == 'good':
-            return response
-        else:
-            return response
+        return response
+
     except Exception as e:
         print(f'АШИБКА БЛИН chek_to_add_users -> :', e)
         return 'error'
 
-def new_user(ph_user, pas, user_realName, mail_, conn, cur):
+def new_user(ph_user, pas, user_realName, mail_, adress, conn, cur):
     try:
-        cur.execute("""INSERT INTO users (user_phoneNumber, user_real_name, paswrd, mail) VALUES (%s, %s, %s);""", (ph_user, user_realName, pas, mail_,))
+        cur.execute("""INSERT INTO users (user_phoneNumber, user_real_name, paswrd, mail, user_adress) VALUES (%s, %s, %s, %s, %s);""", (ph_user, user_realName, pas, mail_, adress,))
         conn.commit()
         conn.close()
         return 'good'
+    except errors.UniqueViolation as e:
+        # Обработка ошибки уникальности
+        conn.rollback()  # Откат транзакции
+        print(f'Ошибка уникальности -> :', e)
+        return 'error_user_mail_exists'
     except Exception as e:
+        conn.rollback()
         print(f'АШИБКА БЛИН new_user -> :', e)
         return 'error'
 
@@ -195,5 +201,6 @@ def get_all_product():
         return 'error'
 
 if __name__ == '__main__':
-    response_bd =login_user("9035853408", "123")
-    print(response_bd[0])
+    conn, cur = conncet_to_bd()
+    response_bd = new_user('45345435', '234123123', 'Андрюша', 'zhuhlin05@gmail.com','неважно', conn, cur)
+    print(response_bd)
